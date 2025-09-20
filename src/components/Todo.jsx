@@ -13,9 +13,13 @@ const Todo = () => {
     e.preventDefault();
   };
   const handleTodo = () => {
-    if (todo && editId === "") {
+    if (!todo.trim()) {
+      setTodo("");
+      return;
+    }
+    if (editId === "") {
       setTodos([...todos, { list: todo, status: false }]);
-    } else if (todo && editId !== "") {
+    } else {
       setTodos(
         todos.map((item, index) =>
           index === editId ? { ...item, list: todo } : item
