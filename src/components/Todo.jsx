@@ -8,10 +8,13 @@ const Todo = () => {
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState([]);
   const [editId, setEditId] = useState("");
+  const [deleteId, setDeleteId] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
   };
+
   const handleTodo = () => {
     if (!todo.trim()) {
       setTodo("");
@@ -35,7 +38,19 @@ const Todo = () => {
   useEffect(() => inputRef.current.focus());
 
   const handleDelete = (id) => {
-    setTodos(todos.filter((_, index) => index !== id));
+    setDeleteId(id);
+    setShowConfirm(true);
+  };
+
+  const confirmDelete = () => {
+    setTodos(todos.filter((_, index) => index !== deleteId));
+    setShowConfirm(false);
+    setDeleteId(null);
+  };
+
+  const cancelDelete = () => {
+    setShowConfirm(false);
+    setDeleteId(null);
   };
 
   const handleComplete = (id) => {
@@ -100,6 +115,28 @@ const Todo = () => {
           ))}
         </ul>
       </div>
+
+      {showConfirm && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>Confirm Delete</h3>
+            </div>
+            <div className="modal-body">
+              <p>Are you sure you want to delete this todo?</p>
+              <p className="todo-preview">"{todos[deleteId]?.list}"</p>
+            </div>
+            <div className="modal-footer">
+              <button className="btn-cancel" onClick={cancelDelete}>
+                Cancel
+              </button>
+              <button className="btn-delete" onClick={confirmDelete}>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
